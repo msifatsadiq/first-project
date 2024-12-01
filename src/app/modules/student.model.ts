@@ -9,7 +9,7 @@ import {
 const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
-    required: true,
+    required: [true, "You must input first name"],
   },
   middleName: {
     type: String,
@@ -67,21 +67,44 @@ const localGuardianSchema = new Schema<localGuardian>({
 });
 
 const studentSchema = new Schema<Student>({
-  id: { type: String },
-  name: userNameSchema,
+  id: { type: String, required: true, unique: true },
+  name: {
+    type: userNameSchema,
+    required: true,
+  },
 
-  gender: ["male", "female"],
+  gender: {
+    type: String,
+    enum: {
+      values: ["male", "female"],
+      message: "You can only input Male or Female",
+    },
+    required: true,
+  },
   dateOfBirth: { type: String },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
-  bloodGroup: { type: String },
+  bloodGroup: {
+    type: String,
+    enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+  },
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
+  guardian: {
+    type: guardianSchema,
+    required: true,
+  },
+  localGuardian: {
+    type: localGuardianSchema,
+    required: true,
+  },
   profileImg: { type: String },
-  isActive: ["Active", "Blocked"],
+  isActive: {
+    type: String,
+    enum: ["Active", "Blocked"],
+    default: "Active",
+  },
 });
 
 // 3. Create a Model.
